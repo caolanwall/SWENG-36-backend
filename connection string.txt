@@ -1,0 +1,1 @@
+mongodb+srv://admin:<Pass_word>@cluster0-nlfof.mongodb.net/test?retryWrites=true&w=majority
