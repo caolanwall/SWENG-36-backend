@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const mongoose = require('mongoose');
+const createNewUser = require('./db/routes/user-handler.js')
 
 const API_PORT = 3001;
 const app = express();
@@ -28,7 +29,25 @@ app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
 app.get('/', (req, res) => {
     res.send('Working!')
 })
-router.post('/user', (req, res) => {
-    
+router.post('/user', cors(), (req, res) => {
+    const userName = req.query.name;
+    const id = req.query.id;
+    const pass = req.query.pass;
+    const modules = req.query.modules;
+    const role = req.query.role;
+    console.log(userName);
+    console.log(id);
+    createNewUser(
+        userName,
+        id,
+        data => {
+          return res.json({ data, success: true });
+        },
+        () => {
+          return res.json({
+            success: false,
+          });
+        },
+      );
 });
 
