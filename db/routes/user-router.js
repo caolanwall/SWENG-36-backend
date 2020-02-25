@@ -4,7 +4,9 @@ const UserCtrl = require('../controllers/user-ctrl')
 
 const router = express.Router()
 
-router.post('/user', UserCtrl.createUser)
+router.post('/user', (req, res) => {
+
+});
 router.put('/user/:id', UserCtrl.updateUser)
 router.delete('/user/:id', UserCtrl.deleteUser)
 router.get('/user/:id', UserCtrl.getUserById)
