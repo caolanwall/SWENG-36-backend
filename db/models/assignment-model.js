@@ -5,7 +5,7 @@ const assignmentSchema = new Schema(
     {
 		//Assignment
 		title: { type: String, required: true },
-	  description: { type: String, required: true},
+	        description: { type: String, required: true},
 		id: { type: Number, required: true},
 		attachments: { type: [binData], required: true},	
 		first_Start : { type: Date, required: true},
@@ -16,7 +16,7 @@ const assignmentSchema = new Schema(
 		
 		//Author 
 		author: { type: Number, required: true},
-		authorName: { type: String, required: true},
+		author_Name: { type: String, required: true},
 		year: {type: Number, required: true},
 		
 		//Review
