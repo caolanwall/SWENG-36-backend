@@ -4,8 +4,9 @@ const Schema = mongoose.Schema
 const assignmentSchema = new Schema(
     {
 		//Assignment
+		module_Name: { type: String, required: true},
 		title: { type: String, required: true },
-	        description: { type: String, required: true},
+		description: { type: String, required: true},
 		id: { type: Number, required: true},
 		attachments: { type: [binData], required: true},	
 		first_Start : { type: Date, required: true},
