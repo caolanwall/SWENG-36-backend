@@ -1,3 +1,9 @@
+# Instructions for setting up
+* Place in the project directory a file named `.env` containing the connection string to the database in the following format: `CONNECTION_STRING=theString`
+* Run `npm run dev` to start the server using *nodemon*, such that it automatically restarts every time a change is made. Otherwise simply run `npm start`.
+
+
+
 # For development
 
 In the project directory, run `npm install` once, and then `npm start` to run the app.
