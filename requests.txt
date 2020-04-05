@@ -1,0 +1,7 @@
+Remove "<userID>" and replace with the given ID
+
+Add module to user
+PATCH localhost:3001/userModule?id=<userID>&module=<ModuleID>
+
+Remove module from user
+DELETE localhost:3001/userModule?id=<userID>&module=<ModuleID>
