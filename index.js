@@ -16,9 +16,7 @@ const dbRoute = process.env.CONNECTION_STRING
 
 app.use(cors());
 
-mongoose.connect(
-	dbRoute,
-	{ useNewUrlParser: true })
+mongoose.connect(dbRoute,{ useNewUrlParser: true , useUnifiedTopology: true })
 
 const db = mongoose.connection;
 db.once('open', () => console.log('connected to the database'));
@@ -34,13 +32,13 @@ app.get('/', (req, res) => {
 
 //works
 router.post('/user', cors(), (req, res) => {
-    const userName = req.query.name;
-	const obama = "TEST";
-    const id = req.query.id;
-    const pass = req.query.pass;
-    const modules = req.query.modules;
-    const role = req.query.role;
-    const assignments = req.query.assignments;
+	console.log("create user", req.body);
+    const userName = req.body.name;
+    const id = req.body.id;
+    const pass = req.body.pass;
+    const modules = req.body.modules;
+    const role = req.body.role;
+    const assignments = req.body.assignments;
     console.log(userName);
     console.log(id);
     console.log(pass);
@@ -193,8 +191,8 @@ router.post('/auth', cors(), (req, res) => {
 });
 
 router.post('/validateUsername', cors(), (req, res) => {
-  const username = req.query.username;
-  const role = req.query.role;
+  const username = req.body.username;
+  const role = req.body.role;
   console.log(username);
   console.log(role);
   userAuthHandler.validateUsername(

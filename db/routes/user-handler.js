@@ -5,8 +5,7 @@ const User = require(path.join(__dirname, '..', 'models', 'user-model.js'))
 
 const createNewUser = async ( userName, Id, Pass, Modules, Role, Assignments, callback
     ) => {
-      try {    
-        console.log(Pass);
+      try {
         const user = new User({
           name: userName,
           id: Id,
@@ -33,8 +32,8 @@ const createNewUser = async ( userName, Id, Pass, Modules, Role, Assignments, ca
 const updateUser = async ( userName, Id, Pass, Modules, Role, Assignments, callback
   ) => {
   try {
-    const dummy = await User.updateOne({"id": Id }, {$set: 
-      { 
+    const dummy = await User.updateOne({"id": Id }, {$set:
+      {
         "name": userName,
         "id": Id,
         "pass": Pass,
@@ -57,7 +56,7 @@ const addModuleToUser = async (id, module, callback) => {
       console.log(ret);
       const data = new User(ret);
       data.modules.push(module);
-      data 
+      data
       .save()
             .then(result => {
               console.log(result);
@@ -80,13 +79,13 @@ const removeModuleUser = async (id, module, callback) => {
     if (ret != null){
       console.log(ret);
       const data = new User(ret);
-      for( var i = 0; i < data.modules.length; i++){ 
+      for( var i = 0; i < data.modules.length; i++){
         console.log(data.modules[i])
-        if ( data.modules[i] === module) { 
-          data.modules.splice(i, 1); 
+        if ( data.modules[i] === module) {
+          data.modules.splice(i, 1);
         }
       }
-      data 
+      data
       .save()
             .then(result => {
               console.log(result);
