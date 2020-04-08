@@ -3,7 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const mongoose = require('mongoose');
 const userHandler = require('./db/routes/user-handler.js');
-const userAuthHandler = require('./db/routes/userAuth-handler.js');
+const auth = require('./db/routes/userAuth-handler.js');
 const assignmentHandler = require('./db/routes/assignment-handler.js');
 
 const API_PORT = 3001;
@@ -168,34 +168,12 @@ router.delete('/user', cors(), (req, res) => {
       );
 });
 
-
 router.post('/auth', cors(), (req, res) => {
-  const userName = req.query.username;
-  const pass = req.query.password;
-  const role = req.query.role;
-  console.log(userName);
-  console.log(pass);
-  userAuthHandler.authenticateUser(
-      userName,
-      pass,
-      role,
-      data => {
-        return res.json({ data, success: true });
-      },
-      () => {
-        return res.json({
-          success: false,
-        });
-      },
-    );
-});
-
-router.post('/validateUsername', cors(), (req, res) => {
   const username = req.body.username;
   const role = req.body.role;
   console.log(username);
   console.log(role);
-  userAuthHandler.validateUsername(
+  auth(
       username,
       role,
       (success, hash) => {

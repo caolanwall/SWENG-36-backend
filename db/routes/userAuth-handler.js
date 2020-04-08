@@ -1,7 +1,7 @@
 const path = require('path');
 const User = require(path.join(__dirname, '..', 'models', 'user-model.js'));
 
-const validateUsername = async (username, role, callback) => {
+const auth = async (username, role, callback) => {
 	try {
 		console.log("Trying to validate username");
 		const found = await User.findOne({name: username})
@@ -20,4 +20,4 @@ const validateUsername = async (username, role, callback) => {
 };
 
 
-module.exports = {validateUsername}
+module.exports = auth
