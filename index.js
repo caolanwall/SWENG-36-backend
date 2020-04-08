@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
     res.send('Working!')
 })
 
-//works
+// Create User
 router.post('/user', cors(), (req, res) => {
 	console.log("create user", req.body);
     const userName = req.body.name;
@@ -60,7 +60,7 @@ router.post('/user', cors(), (req, res) => {
       );
 });
 
-//works
+// Update User
 router.put('/user', cors(), (req, res) => {
   const userName = req.query.name;
   const id = req.query.id;
@@ -89,6 +89,7 @@ router.put('/user', cors(), (req, res) => {
     );
 });
 
+// Add module
 router.patch('/userModule', cors(), (req, res) => {
   console.log("");
   const id = req.query.id;
@@ -109,6 +110,7 @@ router.patch('/userModule', cors(), (req, res) => {
 
 });
 
+// Remove module
 router.delete('/userModule', cors(), (req, res) => {
   console.log("");
   const id = req.query.id;
@@ -128,7 +130,7 @@ router.delete('/userModule', cors(), (req, res) => {
     );
 });
 
-//works
+// Get user by ID
 router.get('/user', cors(), (req, res) => {
   console.log("getUserById");
   const id = req.query.id;
@@ -150,7 +152,7 @@ router.get('/user', cors(), (req, res) => {
       );
 });
 
-//works
+// Delete User
 router.delete('/user', cors(), (req, res) => {
   console.log("deleteUser");
   const id = req.query.id;
@@ -168,6 +170,7 @@ router.delete('/user', cors(), (req, res) => {
       );
 });
 
+// Authenticate User
 router.post('/auth', cors(), (req, res) => {
   const username = req.body.username;
   const role = req.body.role;
@@ -176,13 +179,13 @@ router.post('/auth', cors(), (req, res) => {
   auth(
       username,
       role,
-      (success, hash) => {
-		  return res.json({success, hash});
+      (success, hash, id) => {
+		  return res.json({success, hash, id});
       }
     );
 });
 
-//works
+// Create new assignment
 router.post('/assignment', cors(), (req, res) => {
   console.log("createNewAssignment");
   const id = req.query.id;
@@ -230,7 +233,7 @@ router.post('/assignment', cors(), (req, res) => {
       );
 });
 
-//works
+// Update assignment
 router.put('/assignment', cors(), (req, res) => {
   console.log("updateAssignment");
   const id = req.query.id;
@@ -278,7 +281,7 @@ router.put('/assignment', cors(), (req, res) => {
       );
 });
 
-//works
+// Get assignment by ID
 router.get('/assignment', cors(), (req, res) => {
   console.log("getAssignmentById");
   const id = req.query.id;
@@ -300,7 +303,7 @@ router.get('/assignment', cors(), (req, res) => {
       );
 });
 
-//works
+// Delete Assignment
 router.delete('/assignment', cors(), (req, res) => {
   console.log("deleteAssignment");
   const id = req.query.id;

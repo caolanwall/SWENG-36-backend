@@ -9,7 +9,7 @@ const auth = async (username, role, callback) => {
 			console.log("Did not find username!", username, role);
 			callback(false);
 		}
-		else if(role === found.role) callback(true, found.pass);
+		else if(role === found.role) callback(true, found.pass, found.id);
 		else {
 			console.log("Username doesn't match, role: ", role, " found: ", found.role);
 			callback(false);
