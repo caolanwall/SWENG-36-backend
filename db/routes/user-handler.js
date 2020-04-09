@@ -112,6 +112,15 @@ const getUserById = async (id, callback) => {
   }
 };
 
+const getUserByRole = async (role, callback) => {
+  try {
+    const ret = await User.find({ "role":role });
+    callback(ret);
+  } catch (e) {
+    error();
+  }
+};
+
 //TODO:returned empty array
 const getUser = async (callback) => {
   try {
@@ -137,6 +146,7 @@ module.exports = {
   updateUser: updateUser,
   getUser: getUser,
   getUserById: getUserById,
+  getUserByRole: getUserByRole,
   deleteUser:deleteUser,
   addModuleToUser: addModuleToUser,
   removeModuleUser: removeModuleUser

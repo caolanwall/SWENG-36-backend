@@ -89,7 +89,7 @@ router.put('/user', cors(), (req, res) => {
     );
 });
 
-// Add module
+// Add module to user
 router.patch('/userModule', cors(), (req, res) => {
   console.log("");
   const id = req.query.id;
@@ -110,7 +110,7 @@ router.patch('/userModule', cors(), (req, res) => {
 
 });
 
-// Remove module
+// Remove module from user
 router.delete('/userModule', cors(), (req, res) => {
   console.log("");
   const id = req.query.id;
@@ -130,17 +130,38 @@ router.delete('/userModule', cors(), (req, res) => {
     );
 });
 
-// Get user by ID
+// Get user by ID or Role
 router.get('/user', cors(), (req, res) => {
-  console.log("getUserById");
-  const id = req.query.id;
+	if(req.query.id != null){
+		console.log("getUserByID");
+		const property = req.query.id;
 
-    userHandler.getUserById(
-        id,
-        data => {
-          if(isEmptyObject(data)){
-            return res.json("No result");
-          }
+		userHandler.getUserById(
+			id,
+			data => {
+				if(isEmptyObject(data)){
+					return res.json("No result");
+				}
+				else
+					return res.json({ data, success: true });
+			},
+			() => {
+				return res.json({
+					success: false,
+				});
+			},
+		);
+
+	} else if(req.query.role != null){
+		console.log("getUserByRole");
+		const role = req.query.role;
+
+		userHandler.getUserByRole(
+			role,
+			data => {
+				if(isEmptyObject(data)){
+					return res.json("No result");
+				}
           else
             return res.json({ data, success: true });
         },
@@ -150,6 +171,10 @@ router.get('/user', cors(), (req, res) => {
           });
         },
       );
+
+	} else {
+		console.log("Unknown User property!")
+	}
 });
 
 // Delete User
