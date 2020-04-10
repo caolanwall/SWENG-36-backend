@@ -2,17 +2,13 @@ const path = require('path')
 
 const User = require(path.join(__dirname, '..', 'models', 'user-model.js'))
 
-
-const createNewUser = async ( userName, Id, Pass, Modules, Role, Assignments, callback
-    ) => {
+const createNewUser = async ( userName, Pass, Modules, Role, callback) => {
       try {
         const user = new User({
           name: userName,
-          id: Id,
           pass: Pass,
           modules: Modules,
           role: Role,
-          assignments: Assignments,
         });
         user
           .save()
@@ -29,20 +25,17 @@ const createNewUser = async ( userName, Id, Pass, Modules, Role, Assignments, ca
     };
 
 //works
-const updateUser = async ( userName, Id, Pass, Modules, Role, Assignments, callback
-  ) => {
+const updateUser = async ( userName, Id, Pass, Modules, Role, callback) => {
   try {
-    const dummy = await User.updateOne({"id": Id }, {$set:
+    const dummy = await User.updateOne({"_id": Id }, {$set:
       {
         "name": userName,
-        "id": Id,
         "pass": Pass,
         "modules": Modules,
         "role": Role,
-        "assignments": Assignments,
       }
     });
-    const ret = await User.find({"id": Id});
+    const ret = await User.find({"_id": Id});
     callback(ret);
   } catch (e) {
     console.log(e);
@@ -51,7 +44,7 @@ const updateUser = async ( userName, Id, Pass, Modules, Role, Assignments, callb
 
 const addModuleToUser = async (id, module, callback) => {
   try {
-    const ret = await User.findOne({ id :id });
+    const ret = await User.findOne({ _id :id });
     if (ret != null){
       console.log(ret);
       const data = new User(ret);
@@ -75,7 +68,7 @@ const addModuleToUser = async (id, module, callback) => {
 
 const removeModuleUser = async (id, module, callback) => {
   try {
-    const ret = await User.findOne({ id :id });
+    const ret = await User.findOne({ _id :id });
     if (ret != null){
       console.log(ret);
       const data = new User(ret);
@@ -105,10 +98,11 @@ const removeModuleUser = async (id, module, callback) => {
 //works
 const getUserById = async (id, callback) => {
   try {
-    const ret = await User.find({ "id":id });
+    const ret = await User.find({ "_id":id });
     callback(ret);
   } catch (e) {
-    error();
+	callback({})
+    console.log(e)
   }
 };
 
@@ -134,7 +128,7 @@ const getUser = async (callback) => {
 //works
 const deleteUser = async (id, callback)=>{
   try{
-    const ret = await User.deleteOne({ "id": id});
+    const ret = await User.deleteOne({ "_id": id});
     callback(ret);
   }catch(e){
     callback(e);

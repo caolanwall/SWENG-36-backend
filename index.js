@@ -34,21 +34,16 @@ app.get('/', (req, res) => {
 router.post('/user', cors(), (req, res) => {
 	console.log("create user", req.body);
     const userName = req.body.name;
-    const id = req.body.id;
     const pass = req.body.pass;
     const modules = req.body.modules;
     const role = req.body.role;
-    const assignments = req.body.assignments;
     console.log(userName);
-    console.log(id);
     console.log(pass);
     userHandler.createNewUser(
         userName,
-        id,
         pass,
         modules,
         role,
-        assignments,
         data => {
           return res.json({ data, success: true });
         },
@@ -67,17 +62,14 @@ router.put('/user', cors(), (req, res) => {
   const pass = req.query.pass;
   const modules = req.query.modules;
   const role = req.query.role;
-  const assignments = req.query.assignments;
   console.log(userName);
   console.log(id);
   console.log(pass);
   userHandler.updateUser(
       userName,
-      id,
       pass,
       modules,
       role,
-      assignments,
       data => {
         return res.json({ data, success: true });
       },
@@ -91,7 +83,7 @@ router.put('/user', cors(), (req, res) => {
 
 // Add module to user
 router.patch('/userModule', cors(), (req, res) => {
-  console.log("");
+  console.log("addModuleToUser");
   const id = req.query.id;
   const moduleID = req.query.module;
 
@@ -134,7 +126,7 @@ router.delete('/userModule', cors(), (req, res) => {
 router.get('/user', cors(), (req, res) => {
 	if(req.query.id != null){
 		console.log("getUserByID");
-		const property = req.query.id;
+		const id = req.query.id;
 
 		userHandler.getUserById(
 			id,
@@ -213,25 +205,23 @@ router.post('/auth', cors(), (req, res) => {
 // Create new assignment
 router.post('/assignment', cors(), (req, res) => {
   console.log("createNewAssignment");
-  const id = req.query.id;
-  const title = req.query.title;
-  const description = req.query.description;
-  const module_Code = req.query.module_Code;
-  const attachments = req.query.attachments;
-  const draft_Start = req.query.draft_Start;
-  const draft_End = req.query.draft_End;
-  const review_Start = req.query.review_Start;
-  const review_End = req.query.review_End;
-  const final_Start = req.query.final_Start;
-  const final_End = req.query.final_End
-  const review_Count = req.query.review_Count;
-  const old_Weight = req.query.old_Weight;
-  const samples = req.query.samples;
-  const samples_Score = req.query.samples_Score;
-  const marking_Scheme = req.query.marking_Scheme;
+  const title = req.body.title;
+  const description = req.body.description;
+  const module_Code = req.body.module_Code;
+  const attachments = req.body.attachments;
+  const draft_Start = req.body.draft_Start;
+  const draft_End = req.body.draft_End;
+  const review_Start = req.body.review_Start;
+  const review_End = req.body.review_End;
+  const final_Start = req.body.final_Start;
+  const final_End = req.body.final_End
+  const review_Count = req.body.review_Count;
+  const old_Weight = req.body.old_Weight;
+  const samples = req.body.samples;
+  const samples_Score = req.body.samples_Score;
+  const marking_Scheme = req.body.marking_Scheme;
 
     assignmentHandler.createNewAssignment(
-        id,
         title,
         description,
         module_Code,
@@ -261,7 +251,6 @@ router.post('/assignment', cors(), (req, res) => {
 // Update assignment
 router.put('/assignment', cors(), (req, res) => {
   console.log("updateAssignment");
-  const id = req.query.id;
   const title = req.query.title;
   const description = req.query.description;
   const module_Code = req.query.module_Code;
@@ -279,7 +268,6 @@ router.put('/assignment', cors(), (req, res) => {
   const marking_Scheme = req.query.marking_Scheme;
 
     assignmentHandler.updateAssignment(
-        id,
         title,
         description,
         module_Code,
@@ -306,26 +294,50 @@ router.put('/assignment', cors(), (req, res) => {
       );
 });
 
-// Get assignment by ID
+// Get assignment by ID or Module
 router.get('/assignment', cors(), (req, res) => {
-  console.log("getAssignmentById");
-  const id = req.query.id;
 
-    assignmentHandler.getAssignmentById(
-        id,
-        data => {
-          if(isEmptyObject(data)){
-            return res.json("No result");
-          }
-          else
-            return res.json({ data, success: true });
-        },
-        () => {
-          return res.json({
-            success: false,
-          });
-        },
-      );
+	if(req.query.id != null){
+		console.log("getAssignmentById");
+		const id = req.query.id;
+
+		assignmentHandler.getAssignmentById(
+			id,
+			data => {
+				if(isEmptyObject(data)){
+					return res.json("No result");
+				}
+				else
+					return res.json({ data, success: true });
+			},
+			() => {
+				return res.json({
+					success: false,
+				});
+			},
+		);
+	} else if(req.query.module != null){
+		console.log("getAssignmentByModule");
+		const module = req.query.module;
+
+		assignmentHandler.getAssignmentByModule(
+			module,
+			data => {
+				if(isEmptyObject(data)){
+					return res.json("No result");
+				}
+				else
+					return res.json({ data, success: true });
+			},
+			() => {
+				return res.json({
+					success: false,
+				});
+			},
+		);
+	} else {
+		console.log("No ID or Module provided!")
+	}
 });
 
 // Delete Assignment

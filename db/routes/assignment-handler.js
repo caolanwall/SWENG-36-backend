@@ -3,13 +3,12 @@ const path = require('path')
 const Assignment = require(path.join(__dirname, '..', 'models', 'assignment-model.js'))
 
 //works
-const createNewAssignment = async ( Id, Title, Description, Module_Code, Attachments, Draft_Start, Draft_End, Review_Start, Review_End, Final_Start, Final_End,
+const createNewAssignment = async (Title, Description, Module_Code, Attachments, Draft_Start, Draft_End, Review_Start, Review_End, Final_Start, Final_End,
     Review_Count, Old_Weight, Samples, Samples_Score, Marking_Scheme, callback
     ) => {
-    
-      try {    
+
+      try {
         const assignment = new Assignment({
-          id : Id,
           title : Title,
           description : Description,
           module_Code : Module_Code,
@@ -41,13 +40,12 @@ const createNewAssignment = async ( Id, Title, Description, Module_Code, Attachm
     };
 
 //works
- const updateAssignment = async ( Id, Title, Description, Module_Code, Attachments, Draft_Start, Draft_End, Review_Start, Review_End, Final_Start, Final_End,
+ const updateAssignment = async (Title, Description, Module_Code, Attachments, Draft_Start, Draft_End, Review_Start, Review_End, Final_Start, Final_End,
   Review_Count, Old_Weight, Samples, Samples_Score, Marking_Scheme, callback
   ) => {
   try {
-    const dummy = await Assignment.updateOne({"id": Id }, {$set: 
-      { 
-        "id" : Id,
+    const dummy = await Assignment.updateOne({"_id": Id }, {$set:
+      {
         "title" : Title,
         "description" : Description,
         "module_Code" : Module_Code,
@@ -65,7 +63,7 @@ const createNewAssignment = async ( Id, Title, Description, Module_Code, Attachm
         "marking_Scheme" : Marking_Scheme
       }
     });
-    const ret = await Assignment.find({"id": Id});
+    const ret = await Assignment.find({"_id": Id});
     callback(ret);
   } catch (e) {
     console.log(e);
@@ -75,11 +73,21 @@ const createNewAssignment = async ( Id, Title, Description, Module_Code, Attachm
 //works
 const getAssignmentById = async (id, callback) => {
   try {
-    const ret = await Assignment.find({ "id":id });
+    const ret = await Assignment.find({ "_id":id });
     callback(ret);
   } catch (e) {
     error();
   }
+};
+
+const getAssignmentByModule = async (module, callback) => {
+	try {
+		const ret = await Assignment.find({ "module_Code": module });
+		callback(ret);
+	} catch (e) {
+		callback({})
+		console.log(e)
+	}
 };
 
 //TODO:returned empty array
@@ -95,18 +103,19 @@ const getAssignment = async (callback) => {
 //works
 const deleteAssignment = async (id, callback)=>{
   try{
-    const ret = await Assignment.deleteOne({ "id": id});
+    const ret = await Assignment.deleteOne({ "_id": id});
     callback(ret);
   }catch(e){
     callback(e);
   }
 }
 
-    
+
 module.exports = {
   createNewAssignment: createNewAssignment,
   updateAssignment: updateAssignment,
   getAssignment: getAssignment,
   getAssignmentById: getAssignmentById,
+  getAssignmentByModule: getAssignmentByModule,
   deleteAssignment: deleteAssignment
 };
