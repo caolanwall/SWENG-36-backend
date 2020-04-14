@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const userHandler = require('./db/routes/user-handler.js');
 const auth = require('./db/routes/userAuth-handler.js');
 const assignmentHandler = require('./db/routes/assignment-handler.js');
+const moduleHandler = require('./db/routes/module-handler.js');
+
 
 const API_PORT = 3001;
 const app = express();
@@ -356,6 +358,97 @@ router.delete('/assignment', cors(), (req, res) => {
           });
         },
       );
+});
+
+// Create Module
+router.post('/module', cors(), (req, res) => {
+	console.log("create module", req.body);
+    const Id = req.body.id;
+    const Name = req.body.name;
+    const Instructor_IDs = req.body.instructor_IDs;
+    const Student_IDs = req.body.student_Ids;
+    const Assignment_IDs = req.body.assignment_IDs;
+    console.log(name);
+    moduleHandler.createNewModule(
+        Id, 
+        Name, 
+        Instructor_IDs, 
+        Student_IDs, 
+        Assignment_IDs,
+        data => {
+          return res.json({ data, success: true });
+        },
+        () => {
+          return res.json({
+            success: false,
+          });
+        },
+      );
+});
+
+// Update Module
+router.put('/module', cors(), (req, res) => {
+  const Id = req.body.id;
+  const Name = req.body.name;
+  const Instructor_IDs = req.body.instructor_IDs;
+  const Student_IDs = req.body.student_Ids;
+  const Assignment_IDs = req.body.assignment_IDs;
+  console.log(Name);
+  moduleHandler.updateModule(
+      Id, 
+      Name, 
+      Instructor_IDs, 
+      Student_IDs, 
+      Assignment_IDs,
+      data => {
+        return res.json({ data, success: true });
+      },
+      () => {
+        return res.json({
+          success: false,
+        });
+      },
+    );
+});
+
+// Delete Module
+router.delete('/module', cors(), (req, res) => {
+  console.log("deleteModule");
+  const id = req.query.id;
+
+    moduleHandler.deleteModule(
+        id,
+        data => {
+          return res.json({ data, success: true });
+        },
+        () => {
+          return res.json({
+            success: false,
+          });
+        },
+      );
+});
+
+// Get module by Id
+router.get('/module', cors(), (req, res) => {
+		console.log("getModuleById");
+		const id = req.query.id;
+
+		moduleHandler.getModuleById(
+			id,
+			data => {
+				if(isEmptyObject(data)){
+					return res.json("No result");
+				}
+				else
+					return res.json({ data, success: true });
+			},
+			() => {
+				return res.json({
+					success: false,
+				});
+			},
+		);
 });
 
 function isEmptyObject(obj) {
