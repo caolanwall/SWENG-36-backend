@@ -121,8 +121,8 @@ router.patch('/userModule', cors(), (req, res) => {
 // Remove module from user
 router.delete('/userModule', cors(), (req, res) => {
   console.log("");
-  const id = req.query.id;
-  const moduleID = req.query.module;
+  const id = req.body.id;
+  const moduleID = req.body.module;
 
     userHandler.removeModuleUser(
         id,
@@ -188,8 +188,8 @@ router.get('/user', cors(), (req, res) => {
 // Delete User
 router.delete('/user', cors(), (req, res) => {
   console.log("deleteUser");
-  const id = req.query.id;
-
+  const id = req.body.id;
+  console.log(id);
     userHandler.deleteUser(
         id,
         data => {
@@ -359,7 +359,7 @@ router.get('/assignment', cors(), (req, res) => {
 // Delete Assignment
 router.delete('/assignment', cors(), (req, res) => {
   console.log("deleteAssignment");
-  const id = req.query.id;
+  const id = req.body.id;
 
     assignmentHandler.deleteAssignment(
         id,
