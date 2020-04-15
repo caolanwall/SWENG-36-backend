@@ -18,9 +18,8 @@ let dotenv = require("dotenv")
 dotenv.config()
 const dbRoute = process.env.CONNECTION_STRING
 
-mongoose.connect(dbRoute,{ useNewUrlParser: true , useUnifiedTopology: true })
+mongoose.connect(dbRoute, { useNewUrlParser: true , useUnifiedTopology: true })
 const db = mongoose.connection;
-db.once('open', () => console.log('connected to the database'));
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 let gfs;
@@ -34,8 +33,8 @@ db.once("open", () => {
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use('/', router);
 app.use(cors());
+app.use('/', router);
 app.use(express.json());
 
 //// TODO: NO NEED, add body parser
@@ -204,7 +203,7 @@ router.delete('/user', cors(), (req, res) => {
 });
 
 // Authenticate User
-router.post('/auth', cors(), (req, res) => {
+router.post('/auth', (req, res) => {
   const username = req.body.username;
   const role = req.body.role;
   console.log(username);
@@ -559,7 +558,7 @@ router.put('/submission', cors(), (req, res) => {
           }
           else{
             return res.json({ data, success: true });
-          } 
+          }
       },
       () => {
         return res.json({
@@ -590,7 +589,7 @@ router.get('/submission', cors(), (req, res) => {
 				});
 			},
 		);
-  } 
+  }
   else if(req.body.submission_Id != null){
 		console.log("getSubmissionBySubmissionId");
         const submission_Id =req.body.submission_Id;
