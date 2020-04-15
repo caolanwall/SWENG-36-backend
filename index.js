@@ -5,7 +5,10 @@ const mongoose = require('mongoose');
 const userHandler = require('./db/routes/user-handler.js');
 const auth = require('./db/routes/userAuth-handler.js');
 const assignmentHandler = require('./db/routes/assignment-handler.js');
-
+const crypto = require("crypto");
+const path = require("path");
+const multer = require("multer");
+const GridFsStorage = require("multer-gridfs-storage");
 const API_PORT = 3001;
 const app = express();
 const router = express.Router();
@@ -14,16 +17,20 @@ let dotenv = require("dotenv")
 dotenv.config()
 const dbRoute = process.env.CONNECTION_STRING
 
-app.use(cors());
-
 mongoose.connect(dbRoute,{ useNewUrlParser: true , useUnifiedTopology: true })
-
 const db = mongoose.connection;
 db.once('open', () => console.log('connected to the database'));
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+// Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/', router);
+app.use(cors());
+app.use(express.json());
+
+//// TODO: NO NEED, add body parser
+app.set("view engine", "ejs");
 
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
 app.get('/', (req, res) => {
@@ -361,3 +368,130 @@ router.delete('/assignment', cors(), (req, res) => {
 function isEmptyObject(obj) {
   return !Object.keys(obj).length;
 }
+
+// init gfs
+let gfs;
+conn.once("open", () => {
+  // init stream
+  gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+    bucketName: "uploads"
+  });
+});
+
+// Storage
+//Hexs filename before uploading
+const storage = new GridFsStorage({
+  url: mongoURI,
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        const filename = buf.toString("hex") + path.extname(file.originalname);
+        const fileInfo = {
+          filename: filename,
+          bucketName: "uploads"
+        };
+        resolve(fileInfo);
+      });
+    });
+  }
+});
+
+const upload = multer({
+  storage
+});
+
+// get / page
+//Uploads file to GridFsStorage
+//Records contentType as application/pdf
+app.get("/upload", (req, res) => {
+  if(!gfs) {
+    console.log("some error occured, check connection to db");
+    res.send("some error occured, check connection to db");
+    process.exit(0);
+  }
+  gfs.find().toArray((err, files) => {
+    // check if files
+    if (!files || files.length === 0) {
+      return res.render("index", {
+        files: false
+      });
+    } else {
+      const f = files
+        .map(file => {
+          if (
+            file.contentType === "application/pdf"
+          ) {
+            file.isPDF = true;
+          } else {
+            file.isPDF = false;
+          }
+          return file;
+        })
+        .sort((a, b) => {
+          return (
+            new Date(b["uploadDate"]).getTime() -
+            new Date(a["uploadDate"]).getTime()
+          );
+        });
+        console.log("Uploaded Successfully");
+      return res.render("index", {
+        files: f
+      });
+    }
+  });
+});
+
+// Called in Upload.js to upload file from your computer
+app.post("/uploadPDF", upload.single("file"), (req, res) => {
+  res.redirect("/upload");
+});
+
+//Returns id and filenames of all files on server
+app.get("/files", (req, res) => {
+  console.log("get files should be running")
+  gfs.find().toArray((err, files) => {
+    // check if files
+    if (!files || files.length === 0) {
+      return res.status(404).json({
+        err: "no files exist"
+      });
+    }
+    return res.json(files);
+  });
+});
+
+//This works with postman but can't integrate
+//Can download a file put on the server from postman
+//might need to change this to get ids
+app.get("/files/:filename", (req, res) => {
+   console.log('running get file');
+  const file = gfs
+    .find({
+      filename: req.params.filename
+    })
+    .toArray((err, files) => {
+      if (!files || files.length === 0) {
+        console.log('fail');
+        return res.status(404).json({
+          err: "no files exist"
+        });
+      }
+      console.log('Returning file');
+      return gfs.openDownloadStreamByName(req.params.filename).pipe(res);
+    });
+});
+
+
+// files/del/:id
+// Delete chunks from the db
+app.post("/files/del/:id", (req, res) => {
+  gfs.delete(new mongoose.Types.ObjectId(req.params.id), (err, data) => {
+    if (err) return res.status(404).json({ err: err.message });
+    res.redirect("/");
+  });
+});
+
+
