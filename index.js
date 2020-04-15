@@ -22,6 +22,14 @@ const db = mongoose.connection;
 db.once('open', () => console.log('connected to the database'));
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+let gfs;
+db.once("open", () => {
+  // init stream
+  gfs = new mongoose.mongo.GridFSBucket(db.db, {
+    bucketName: "uploads"
+  });
+});
+
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -369,19 +377,12 @@ function isEmptyObject(obj) {
   return !Object.keys(obj).length;
 }
 
-// init gfs
-let gfs;
-conn.once("open", () => {
-  // init stream
-  gfs = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: "uploads"
-  });
-});
+
 
 // Storage
 //Hexs filename before uploading
 const storage = new GridFsStorage({
-  url: mongoURI,
+  url: dbRoute,
   file: (req, file) => {
     return new Promise((resolve, reject) => {
       crypto.randomBytes(16, (err, buf) => {
@@ -444,54 +445,54 @@ app.get("/upload", (req, res) => {
   });
 });
 
-// Called in Upload.js to upload file from your computer
-app.post("/uploadPDF", upload.single("file"), (req, res) => {
-  res.redirect("/upload");
-});
+// // Called in Upload.js to upload file from your computer
+// app.post("/uploadPDF", upload.single("file"), (req, res) => {
+//   res.redirect("/upload");
+// });
 
-//Returns id and filenames of all files on server
-app.get("/files", (req, res) => {
-  console.log("get files should be running")
-  gfs.find().toArray((err, files) => {
-    // check if files
-    if (!files || files.length === 0) {
-      return res.status(404).json({
-        err: "no files exist"
-      });
-    }
-    return res.json(files);
-  });
-});
+// //Returns id and filenames of all files on server
+// app.get("/files", (req, res) => {
+//   console.log("get files should be running")
+//   gfs.find().toArray((err, files) => {
+//     // check if files
+//     if (!files || files.length === 0) {
+//       return res.status(404).json({
+//         err: "no files exist"
+//       });
+//     }
+//     return res.json(files);
+//   });
+// });
 
-//This works with postman but can't integrate
-//Can download a file put on the server from postman
-//might need to change this to get ids
-app.get("/files/:filename", (req, res) => {
-   console.log('running get file');
-  const file = gfs
-    .find({
-      filename: req.params.filename
-    })
-    .toArray((err, files) => {
-      if (!files || files.length === 0) {
-        console.log('fail');
-        return res.status(404).json({
-          err: "no files exist"
-        });
-      }
-      console.log('Returning file');
-      return gfs.openDownloadStreamByName(req.params.filename).pipe(res);
-    });
-});
+// //This works with postman but can't integrate
+// //Can download a file put on the server from postman
+// //might need to change this to get ids
+// app.get("/files/:filename", (req, res) => {
+//    console.log('running get file');
+//   const file = gfs
+//     .find({
+//       filename: req.params.filename
+//     })
+//     .toArray((err, files) => {
+//       if (!files || files.length === 0) {
+//         console.log('fail');
+//         return res.status(404).json({
+//           err: "no files exist"
+//         });
+//       }
+//       console.log('Returning file');
+//       return gfs.openDownloadStreamByName(req.params.filename).pipe(res);
+//     });
+// });
 
 
-// files/del/:id
-// Delete chunks from the db
-app.post("/files/del/:id", (req, res) => {
-  gfs.delete(new mongoose.Types.ObjectId(req.params.id), (err, data) => {
-    if (err) return res.status(404).json({ err: err.message });
-    res.redirect("/");
-  });
-});
+// // files/del/:id
+// // Delete chunks from the db
+// app.post("/files/del/:id", (req, res) => {
+//   gfs.delete(new mongoose.Types.ObjectId(req.params.id), (err, data) => {
+//     if (err) return res.status(404).json({ err: err.message });
+//     res.redirect("/");
+//   });
+// });
 
 
