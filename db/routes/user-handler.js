@@ -125,7 +125,6 @@ const getUser = async (callback) => {
   }
 };
 
-//works
 const deleteUser = async (id, callback)=>{
   try{
     const ret = await User.deleteOne({ "_id": id});

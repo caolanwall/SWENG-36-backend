@@ -80,7 +80,6 @@ const getSubmissions = async (callback) => {
   }
 };
 
-//works
 const deleteSubmission = async (id, callback)=>{
   try{
     const ret = await Submission.deleteOne({ "_id": id});

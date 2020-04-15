@@ -100,7 +100,6 @@ const getAssignment = async (callback) => {
   }
 };
 
-//works
 const deleteAssignment = async (id, callback)=>{
   try{
     const ret = await Assignment.deleteOne({ "_id": id});
