@@ -1,0 +1,101 @@
+const path = require('path')
+
+const Submission = require(path.join(__dirname, '..', 'models', 'submission-model.js'))
+
+const createNewSubmission = async ( Submission_Id, User_Id, Assignment_Id, Pdf_Ids, callback) => {
+      try {
+        const submission = new Submission({
+          submission_Id : Submission_Id,
+          user_Id : User_Id,
+          assignment_Id : Assignment_Id,
+          pdf_Ids : Pdf_Ids,
+        });
+        submission
+          .save()
+          .then(result => {
+            console.log(result);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+        callback(submission);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+//works
+const updateSubmission = async ( Submission_Id, User_Id, Assignment_Id, Pdf_Ids, callback) => {
+  try {
+    const dummy = await Submission.updateOne({"submission_Id": Submission_Id }, {$set:
+      {
+        "user_Id" : User_Id,
+        "assignment_Id" : Assignment_Id,
+        "pdf_Ids" : Pdf_Ids,
+      }
+    });
+    const ret = await Submission.find({"submission_Id": Submission_Id});
+    callback(ret);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const getSubmissionById = async (id, callback) => {
+  try {
+    const ret = await Submission.find({ "_id":id });
+    callback(ret);
+  } catch (e) {
+	callback({})
+    console.log(e)
+  }
+};
+
+const getSubmissionBySubmissionId = async (Submission_Id, callback) => {
+  try {
+    const ret = await Submission.find({ "submission_Id": Submission_Id });
+    callback(ret);
+  } catch (e) {
+	callback({})
+    console.log(e)
+  }
+};
+
+const getSubmissionByUserAssignmentId = async (User_Id, Assignment_Id, callback) => {
+  try {
+    const ret = await Submission.find({ "assignment_Id":Assignment_Id, "user_Id": User_Id});
+    callback(ret);
+  } catch (e) {
+    error();
+  }
+};
+
+//TODO:returned empty array
+const getSubmissions = async (callback) => {
+  try {
+    const ret = await json(Submission.find({}));
+    callback(ret);
+  } catch (e) {
+    error();
+  }
+};
+
+//works
+const deleteSubmission = async (id, callback)=>{
+  try{
+    const ret = await Submission.deleteOne({ "_id": id});
+    callback(ret);
+  }catch(e){
+    callback(e);
+  }
+}
+
+module.exports = {
+  createNewSubmission: createNewSubmission,
+  updateSubmission: updateSubmission,
+  getSubmissions: getSubmissions,
+  getSubmissionById: getSubmissionById,
+  getSubmissionBySubmissionId: getSubmissionBySubmissionId,
+  getSubmissionByUserAssignmentId: getSubmissionByUserAssignmentId,
+  deleteSubmission:deleteSubmission,
+};

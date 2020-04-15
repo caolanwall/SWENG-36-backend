@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const userHandler = require('./db/routes/user-handler.js');
 const auth = require('./db/routes/userAuth-handler.js');
 const assignmentHandler = require('./db/routes/assignment-handler.js');
+const submissionHandler = require('./db/routes/submission-handler.js');
 const crypto = require("crypto");
 const path = require("path");
 const multer = require("multer");
@@ -496,3 +497,143 @@ app.get("/upload", (req, res) => {
 // });
 
 
+//works (allow duplicates)
+// Create Submission
+router.post('/submission', cors(), (req, res) => {
+  console.log("create submission", req.body);
+    const submission_Id = req.body.submission_Id;
+    const user_Id = req.body.user_Id;
+    const assignment_Id = req.body.assignment_Id;
+    const pdf_Ids = req.body.pdf_Ids;
+    console.log(user_Id);
+    submissionHandler.createNewSubmission(
+        submission_Id,
+        user_Id,
+        assignment_Id,
+        pdf_Ids,
+        data => {
+          return res.json({ data, success: true });
+        },
+        () => {
+          return res.json({
+            success: false,
+          });
+        },
+      );
+});
+
+//works
+// Update Submission
+router.put('/submission', cors(), (req, res) => {
+    const submission_Id = req.body.submission_Id;
+    const user_Id = req.body.user_Id;
+    const assignment_Id = req.body.assignment_Id;
+    const pdf_Ids = req.body.pdf_Ids;
+    console.log(user_Id);
+
+    submissionHandler.updateSubmission(
+        submission_Id,
+        user_Id,
+        assignment_Id,
+        pdf_Ids,
+        data => {
+          if(isEmptyObject(data)){
+            return res.json("No such submission")
+          }
+          else{
+            return res.json({ data, success: true });
+          } 
+      },
+      () => {
+        return res.json({
+          success: false,
+        });
+      },
+    );
+});
+
+// Get submission by _id or user_Id and assignment_Id
+router.get('/submission', cors(), (req, res) => {
+	if(req.query.id != null){
+		console.log("getSubmissionByID");
+		const id = req.query.id;
+
+		submissionHandler.getSubmissionById(
+			id,
+			data => {
+				if(isEmptyObject(data)){
+					return res.json("No result");
+				}
+				else
+					return res.json({ data, success: true });
+			},
+			() => {
+				return res.json({
+					success: false,
+				});
+			},
+		);
+  } 
+  else if(req.query.submission_Id != null){
+		console.log("getSubmissionBySubmissionId");
+        const submission_Id =req.query.submission_Id;
+
+		submissionHandler.getSubmissionBySubmissionId(
+        submission_Id,
+			data => {
+				if(isEmptyObject(data)){
+					return res.json("No result");
+				}
+          else
+            return res.json({ data, success: true });
+        },
+        () => {
+          return res.json({
+            success: false,
+          });
+        },
+      );
+
+  }else if(req.query.user_Id != null && req.query.assignment_Id != null){
+		console.log("getSubmissionByUserAssignmentId");
+        const user_Id = req.query.user_Id;
+        const assignment_Id = req.query.assignment_Id;
+
+		submissionHandler.getSubmissionByUserAssignmentId(
+            user_Id,
+            assignment_Id,
+			data => {
+				if(isEmptyObject(data)){
+					return res.json("No result");
+				}
+          else
+            return res.json({ data, success: true });
+        },
+        () => {
+          return res.json({
+            success: false,
+          });
+        },
+      );
+	} else {
+		console.log("Unknown Submission property!")
+	}
+});
+
+// Delete Submission
+router.delete('/submission', cors(), (req, res) => {
+  console.log("deleteSubmission");
+  const id = req.query.id;
+
+    submissionHandler.deleteSubmission(
+        id,
+        data => {
+          return res.json({ data, success: true });
+        },
+        () => {
+          return res.json({
+            success: false,
+          });
+        },
+      );
+});

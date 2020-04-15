@@ -145,14 +145,16 @@ validateUsername = async (req, res) => {
 				success: true,
 				hash: user.password,
 				message: 'User with correct role found!',
-			})
+            })
+        }
+        else
 			return res.status(404).json({
 				success: false,
 				message: 'User with correct role not found!',
 			})
 		})
-	})
-}
+    }
+    
 getUsers = async (req, res) => {
     await User.find({}, (err, users) => {
         if (err) {
