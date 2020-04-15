@@ -18,8 +18,10 @@ let dotenv = require("dotenv")
 dotenv.config()
 const dbRoute = process.env.CONNECTION_STRING
 
-mongoose.connect(dbRoute,{ useNewUrlParser: true , useUnifiedTopology: true })
+mongoose.connect(dbRoute, { useNewUrlParser: true , useUnifiedTopology: true })
 const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 let gfs;
 db.once("open", () => {
   // init stream
@@ -37,8 +39,8 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use('/', router);
 app.use(cors());
+app.use('/', router);
 app.use(express.json());
 
 //// TODO: NO NEED, add body parser
@@ -207,7 +209,7 @@ router.delete('/user', cors(), (req, res) => {
 });
 
 // Authenticate User
-router.post('/auth', cors(), (req, res) => {
+router.post('/auth', (req, res) => {
   const username = req.body.username;
   const role = req.body.role;
   console.log(username);
@@ -508,12 +510,21 @@ router.post('/submission', cors(), (req, res) => {
     const user_Id = req.body.user_Id;
     const assignment_Id = req.body.assignment_Id;
     const pdf_Ids = req.body.pdf_Ids;
+    const reviewer_Id = req.body.reviewer_Id;
+    const review_Comment = req.body.review_Comment;
+    const review_Score = req.body.review_Score;
+    const review_Date = req.body.review_Date;
+
     console.log(user_Id);
     submissionHandler.createNewSubmission(
         submission_Id,
         user_Id,
         assignment_Id,
         pdf_Ids,
+        reviewer_Id,
+        review_Comment,
+        review_Score,
+        review_Date,
         data => {
           return res.json({ data, success: true });
         },
@@ -528,17 +539,25 @@ router.post('/submission', cors(), (req, res) => {
 //works
 // Update Submission
 router.put('/submission', cors(), (req, res) => {
-    const submission_Id = req.body.submission_Id;
-    const user_Id = req.body.user_Id;
-    const assignment_Id = req.body.assignment_Id;
-    const pdf_Ids = req.body.pdf_Ids;
+  const submission_Id = req.body.submission_Id;
+  const user_Id = req.body.user_Id;
+  const assignment_Id = req.body.assignment_Id;
+  const pdf_Ids = req.body.pdf_Ids;
+  const reviewer_Id = req.body.reviewer_Id;
+  const review_Comment = req.body.review_Comment;
+  const review_Score = req.body.review_Score;
+  const review_Date = req.body.review_Date;
     console.log(user_Id);
 
     submissionHandler.updateSubmission(
-        submission_Id,
-        user_Id,
-        assignment_Id,
-        pdf_Ids,
+      submission_Id,
+      user_Id,
+      assignment_Id,
+      pdf_Ids,
+      reviewer_Id,
+      review_Comment,
+      review_Score,
+      review_Date,
         data => {
           if(isEmptyObject(data)){
             return res.json("No such submission")
