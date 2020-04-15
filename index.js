@@ -20,16 +20,19 @@ const dbRoute = process.env.CONNECTION_STRING
 
 mongoose.connect(dbRoute,{ useNewUrlParser: true , useUnifiedTopology: true })
 const db = mongoose.connection;
-db.once('open', () => console.log('connected to the database'));
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
 let gfs;
 db.once("open", () => {
   // init stream
+  console.log('connected to the database')
   gfs = new mongoose.mongo.GridFSBucket(db.db, {
     bucketName: "uploads"
   });
 });
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+
+
+
 
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -417,7 +420,7 @@ app.get("/upload", (req, res) => {
   gfs.find().toArray((err, files) => {
     // check if files
     if (!files || files.length === 0) {
-      return res.render("index", {
+      return res.json({
         files: false
       });
     } else {
@@ -439,7 +442,7 @@ app.get("/upload", (req, res) => {
           );
         });
         console.log("Uploaded Successfully");
-      return res.render("index", {
+      return res.json({
         files: f
       });
     }
@@ -447,44 +450,44 @@ app.get("/upload", (req, res) => {
 });
 
 // // Called in Upload.js to upload file from your computer
-// app.post("/uploadPDF", upload.single("file"), (req, res) => {
-//   res.redirect("/upload");
-// });
+ app.post("/uploadPDF", upload.single("file"), (req, res) => {
+   res.redirect("/upload");
+ });
 
 // //Returns id and filenames of all files on server
-// app.get("/files", (req, res) => {
-//   console.log("get files should be running")
-//   gfs.find().toArray((err, files) => {
-//     // check if files
-//     if (!files || files.length === 0) {
-//       return res.status(404).json({
-//         err: "no files exist"
-//       });
-//     }
-//     return res.json(files);
-//   });
-// });
+ app.get("/files", (req, res) => {
+   console.log("get files should be running")
+   gfs.find().toArray((err, files) => {
+     // check if files
+     if (!files || files.length === 0) {
+       return res.status(404).json({
+         err: "no files exist"
+       });
+     }
+     return res.json(files);
+   });
+ });
 
 // //This works with postman but can't integrate
 // //Can download a file put on the server from postman
 // //might need to change this to get ids
-// app.get("/files/:filename", (req, res) => {
-//    console.log('running get file');
-//   const file = gfs
-//     .find({
-//       filename: req.params.filename
-//     })
-//     .toArray((err, files) => {
-//       if (!files || files.length === 0) {
-//         console.log('fail');
-//         return res.status(404).json({
-//           err: "no files exist"
-//         });
-//       }
-//       console.log('Returning file');
-//       return gfs.openDownloadStreamByName(req.params.filename).pipe(res);
-//     });
-// });
+ app.get("/files/:filename", (req, res) => {
+    console.log('running get file');
+   const file = gfs
+     .find({
+       filename: req.params.filename
+     })
+     .toArray((err, files) => {
+       if (!files || files.length === 0) {
+         console.log('fail');
+         return res.status(404).json({
+           err: "no files exist"
+         });
+       }
+       console.log('Returning file');
+       return gfs.openDownloadStreamByName(req.params.filename).pipe(res);
+     });
+ });
 
 
 // // files/del/:id
@@ -542,7 +545,7 @@ router.put('/submission', cors(), (req, res) => {
           }
           else{
             return res.json({ data, success: true });
-          } 
+          }
       },
       () => {
         return res.json({
@@ -573,7 +576,7 @@ router.get('/submission', cors(), (req, res) => {
 				});
 			},
 		);
-  } 
+  }
   else if(req.body.submission_Id != null){
 		console.log("getSubmissionBySubmissionId");
         const submission_Id =req.body.submission_Id;
