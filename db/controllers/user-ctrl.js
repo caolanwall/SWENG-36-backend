@@ -122,7 +122,6 @@ validateUsername = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-/**
 validateUsername = async (req, res) => {
 	const body = req.body
 
@@ -154,7 +153,6 @@ validateUsername = async (req, res) => {
 		})
 	})
 }
-*/
 getUsers = async (req, res) => {
     await User.find({}, (err, users) => {
         if (err) {
@@ -175,5 +173,4 @@ module.exports = {
     deleteUser,
     getUsers,
     getUserById,
-    validateUsername,
 }
