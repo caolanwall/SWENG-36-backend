@@ -505,12 +505,21 @@ router.post('/submission', cors(), (req, res) => {
     const user_Id = req.body.user_Id;
     const assignment_Id = req.body.assignment_Id;
     const pdf_Ids = req.body.pdf_Ids;
+    const reviewer_Id = req.body.reviewer_Id;
+    const review_Comment = req.body.review_Comment;
+    const review_Score = req.body.review_Score;
+    const review_Date = req.body.review_Date;
+
     console.log(user_Id);
     submissionHandler.createNewSubmission(
         submission_Id,
         user_Id,
         assignment_Id,
         pdf_Ids,
+        reviewer_Id,
+        review_Comment,
+        review_Score,
+        review_Date,
         data => {
           return res.json({ data, success: true });
         },
@@ -525,17 +534,25 @@ router.post('/submission', cors(), (req, res) => {
 //works
 // Update Submission
 router.put('/submission', cors(), (req, res) => {
-    const submission_Id = req.body.submission_Id;
-    const user_Id = req.body.user_Id;
-    const assignment_Id = req.body.assignment_Id;
-    const pdf_Ids = req.body.pdf_Ids;
+  const submission_Id = req.body.submission_Id;
+  const user_Id = req.body.user_Id;
+  const assignment_Id = req.body.assignment_Id;
+  const pdf_Ids = req.body.pdf_Ids;
+  const reviewer_Id = req.body.reviewer_Id;
+  const review_Comment = req.body.review_Comment;
+  const review_Score = req.body.review_Score;
+  const review_Date = req.body.review_Date;
     console.log(user_Id);
 
     submissionHandler.updateSubmission(
-        submission_Id,
-        user_Id,
-        assignment_Id,
-        pdf_Ids,
+      submission_Id,
+      user_Id,
+      assignment_Id,
+      pdf_Ids,
+      reviewer_Id,
+      review_Comment,
+      review_Score,
+      review_Date,
         data => {
           if(isEmptyObject(data)){
             return res.json("No such submission")

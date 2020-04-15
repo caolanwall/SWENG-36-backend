@@ -2,13 +2,17 @@ const path = require('path')
 
 const Submission = require(path.join(__dirname, '..', 'models', 'submission-model.js'))
 
-const createNewSubmission = async ( Submission_Id, User_Id, Assignment_Id, Pdf_Ids, callback) => {
+const createNewSubmission = async ( Submission_Id, User_Id, Assignment_Id, Pdf_Ids, Reviewer_Id, Review_Comment, Review_Score, Review_Date, callback) => {
       try {
         const submission = new Submission({
           submission_Id : Submission_Id,
           user_Id : User_Id,
           assignment_Id : Assignment_Id,
           pdf_Ids : Pdf_Ids,
+          reviewer_Id : Reviewer_Id,
+          review_Comment : Review_Comment,
+          review_Score : Review_Score,
+          review_Date : Review_Date,
         });
         submission
           .save()
@@ -25,13 +29,17 @@ const createNewSubmission = async ( Submission_Id, User_Id, Assignment_Id, Pdf_I
     };
 
 //works
-const updateSubmission = async ( Submission_Id, User_Id, Assignment_Id, Pdf_Ids, callback) => {
+const updateSubmission = async ( Submission_Id, User_Id, Assignment_Id, Pdf_Ids, Reviewer_Id, Review_Comment, Review_Score, Review_Date, callback) => {
   try {
     const dummy = await Submission.updateOne({"submission_Id": Submission_Id }, {$set:
       {
         "user_Id" : User_Id,
         "assignment_Id" : Assignment_Id,
         "pdf_Ids" : Pdf_Ids,
+        "reviewer_Id" : Reviewer_Id,
+        "review_Comment" : Review_Comment,
+        "review_Score" : Review_Score,
+        "review_Date" : Review_Date,
       }
     });
     const ret = await Submission.find({"submission_Id": Submission_Id});
