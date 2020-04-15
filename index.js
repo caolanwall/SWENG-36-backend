@@ -124,7 +124,7 @@ router.delete('/userModule', cors(), (req, res) => {
     );
 });
 
-// Get user by ID or Role or Module
+// Get user by ID or Role
 router.get('/user', cors(), (req, res) => {
 	if(req.query.id != null){
 		console.log("getUserByID");
@@ -165,25 +165,7 @@ router.get('/user', cors(), (req, res) => {
           });
         },
       );
-	} else if(req.query.module != null){
-		console.log("getUserByModule");
-		const module = req.query.module;
 
-		userHandler.getUserByModule(
-			module,
-			data => {
-				if(isEmptyObject(data)){
-					return res.json("No result");
-				}
-          else
-            return res.json({ data, success: true });
-        },
-        () => {
-          return res.json({
-            success: false,
-          });
-        },
-      );
 	} else {
 		console.log("Unknown User property!")
 	}
