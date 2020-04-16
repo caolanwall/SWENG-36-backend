@@ -115,6 +115,17 @@ const getUserByRole = async (role, callback) => {
   }
 };
 
+const getUserByModule = async (module, callback) => {
+	try {
+		const ret = await User.find().where('modules').in(
+			[module]).exec();
+		callback(ret);
+	} catch (e) {
+		callback({})
+		console.log(e)
+	}
+};
+
 //TODO:returned empty array
 const getUser = async (callback) => {
   try {
@@ -140,6 +151,7 @@ module.exports = {
   getUser: getUser,
   getUserById: getUserById,
   getUserByRole: getUserByRole,
+  getUserByModule: getUserByModule,
   deleteUser:deleteUser,
   addModuleToUser: addModuleToUser,
   removeModuleUser: removeModuleUser

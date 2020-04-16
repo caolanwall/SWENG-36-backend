@@ -82,6 +82,7 @@ const getAssignmentById = async (id, callback) => {
 
 const getAssignmentByModule = async (module, callback) => {
 	try {
+		console.log("GETTING ASSM BY MODULE")
 		const ret = await Assignment.find({ "module_Code": module });
 		callback(ret);
 	} catch (e) {
