@@ -456,6 +456,8 @@ const upload = multer({
 // get / page
 //Uploads file to GridFsStorage
 //Records contentType as application/pdf
+//Need to call uploadPDF in app.
+//Returns json of all the files in storage.
 app.get("/upload", (req, res) => {
 	if(!gfs) {
 		console.log("some error occured, check connection to db");
@@ -495,6 +497,7 @@ app.get("/upload", (req, res) => {
 });
 
 // // Called in Upload.js to upload file from your computer
+//Takes in the file selected
 app.post("/uploadPDF", upload.single("file"), (req, res) => {
 	res.redirect("/upload");
 });
@@ -513,9 +516,7 @@ app.get("/files", (req, res) => {
 	});
 });
 
-// //This works with postman but can't integrate
-// //Can download a file put on the server from postman
-// //might need to change this to get ids
+// Returns file as a download by filename.
 app.get("/files/:filename", (req, res) => {
 	console.log('running get file');
 	const file = gfs
@@ -534,7 +535,7 @@ app.get("/files/:filename", (req, res) => {
 		});
 });
 
-
+//Delete files by id
 // // files/del/:id
 // // Delete chunks from the db
 // app.post("/files/del/:id", (req, res) => {
