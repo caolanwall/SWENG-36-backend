@@ -163,6 +163,7 @@ router.get('/user', cors(), (req, res) => {
 	} else if(req.query.role != null){
 		console.log("getUserByRole");
 		const role = req.query.role;
+		console.log(role)
 
 		userHandler.getUserByRole(
 			role,
@@ -182,6 +183,7 @@ router.get('/user', cors(), (req, res) => {
 	} else if(req.query.module != null){
 		console.log("getUserByModule");
 		const module = req.query.module;
+		console.log(module)
 
 		userHandler.getUserByModule(
 			module,
@@ -590,9 +592,9 @@ router.put('/submission', cors(), (req, res) => {
 // works
 // Get submission by _id or user_Id and assignment_Id
 router.get('/submission', cors(), (req, res) => {
-	if(req.body.id != null){
+	if(req.query.id != null){
 		console.log("getSubmissionByID");
-		const id = req.body.id;
+		const id = req.query.id;
 		submissionHandler.getSubmissionById(
 			id,
 			data => {
@@ -609,9 +611,9 @@ router.get('/submission', cors(), (req, res) => {
 			},
 		);
 	}
-	else if(req.body.submission_Id != null){
+	else if(req.query.submission_Id != null){
 		console.log("getSubmissionBySubmissionId");
-		const submission_Id =req.body.submission_Id;
+		const submission_Id = req.query.submission_Id;
 		submissionHandler.getSubmissionBySubmissionId(
 			submission_Id,
 			data => {
@@ -628,10 +630,10 @@ router.get('/submission', cors(), (req, res) => {
 			},
 		);
 
-	}else if(req.body.user_Id != null && req.body.assignment_Id != null){
+	}else if(req.query.user_Id != null && req.query.assignment_Id != null){
 		console.log("getSubmissionByUserAssignmentId");
-		const user_Id = req.body.user_Id;
-		const assignment_Id = req.body.assignment_Id;
+		const user_Id = req.query.user_Id;
+		const assignment_Id = req.query.assignment_Id;
 
 		submissionHandler.getSubmissionByUserAssignmentId(
 			user_Id,
