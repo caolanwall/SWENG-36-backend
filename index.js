@@ -615,6 +615,66 @@ router.put('/submission', cors(), (req, res) => {
 	);
 });
 
+// Update Submission with pdf_Id
+router.patch('/submission', cors(), (req, res) => {
+	const submission_Id = req.body.submission_Id;
+	const pdf_Ids = req.body.pdf_Ids;
+	console.log(submission_Id);
+	console.log(pdf_Ids);
+
+	submissionHandler.updatePDFLinkToSubmission(
+		submission_Id,
+		pdf_Ids,
+		data => {
+			if(isEmptyObject(data)){
+				return res.json("No such submission")
+			}
+			else{
+				return res.json({ data, success: true });
+			}
+		},
+		() => {
+			return res.json({
+				success: false,
+			});
+		},
+	);
+});
+
+// Update Submission with review
+router.patch('/submissionReview', cors(), (req, res) => {
+	const submission_Id = req.body.submission_Id;
+	const reviewer_Id = req.body.reviewer_Id;
+	const review_Comment = req.body.review_Comment;
+	const review_Score = req.body.review_Score;
+	const ts = new Date(Date.now())
+	console.log(submission_Id);
+	console.log(reviewer_Id);
+	console.log(review_Comment);
+	console.log(review_Score);
+
+	submissionHandler.updateReviewToSubmission(
+		submission_Id,
+		reviewer_Id,
+		review_Comment,
+		review_Score,
+		ts,
+		data => {
+			if(isEmptyObject(data)){
+				return res.json("No such submission")
+			}
+			else{
+				return res.json({ data, success: true });
+			}
+		},
+		() => {
+			return res.json({
+				success: false,
+			});
+		},
+	);
+});
+
 // works
 // Get submission by _id or user_Id and assignment_Id
 router.get('/submission', cors(), (req, res) => {

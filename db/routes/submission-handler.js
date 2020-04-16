@@ -78,6 +78,40 @@ const getSubmissionByUserAssignmentId = async (User_Id, Assignment_Id, callback)
   }
 };
 
+const updatePDFLinkToSubmission = async (Submission_Id, Pdf_Ids, callback) =>{
+  try {
+    const ret = await Submission.update(
+      { "submission_Id": Submission_Id },
+      {
+          $push: {
+              pdf_Ids: Pdf_Ids
+          }
+      }
+    );
+    callback(ret);
+  } catch (e) {
+    error();
+  }
+}
+
+const updateReviewToSubmission = async (Submission_Id, Reviewer_Id, Review_Comment, Review_Score, Review_Date, callback) =>{
+  try {
+    const ret = await Submission.update(
+     { "submission_Id": Submission_Id },
+     {
+        $push: {
+            reviewer_Id : Reviewer_Id,
+            review_Comment : Review_Comment,
+            review_Score : Review_Score,
+            review_Date: Review_Date
+        }
+      }
+    );
+    callback(ret);
+  } catch (e) {
+    error();
+  }
+}
 //TODO:returned empty array
 const getSubmissions = async (callback) => {
   try {
@@ -105,4 +139,6 @@ module.exports = {
   getSubmissionBySubmissionId: getSubmissionBySubmissionId,
   getSubmissionByUserAssignmentId: getSubmissionByUserAssignmentId,
   deleteSubmission:deleteSubmission,
+  updatePDFLinkToSubmission: updatePDFLinkToSubmission,
+  updateReviewToSubmission : updateReviewToSubmission
 };
