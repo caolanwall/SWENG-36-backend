@@ -34,8 +34,6 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 
 
-
-
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -43,8 +41,6 @@ app.use(cors());
 app.use('/', router);
 app.use(express.json());
 
-//// TODO: NO NEED, add body parser
-app.set("view engine", "ejs");
 
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
 app.get('/', (req, res) => {
