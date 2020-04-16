@@ -258,17 +258,17 @@ router.post('/assignment', cors(), (req, res) => {
 	const title = req.body.title;
 	const description = req.body.description;
 	const module_Code = req.body.module_Code;
-	const attachments = req.body.attachments;
+	const attachments = [];
 	const draft_Start = req.body.draft_Start;
 	const draft_End = req.body.draft_End;
 	const review_Start = req.body.review_Start;
 	const review_End = req.body.review_End;
 	const final_Start = req.body.final_Start;
 	const final_End = req.body.final_End
-	const review_Count = req.body.review_Count;
-	const old_Weight = req.body.old_Weight;
-	const samples = req.body.samples;
-	const samples_Score = req.body.samples_Score;
+	const review_Count = 0;
+	const old_Weight = 0;
+	const samples = [];
+	const samples_Score = [];
 	const marking_Scheme = req.body.marking_Scheme;
 
 	assignmentHandler.createNewAssignment(
