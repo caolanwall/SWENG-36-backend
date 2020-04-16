@@ -81,7 +81,7 @@ const getSubmissionByUserAssignmentId = async (User_Id, Assignment_Id, callback)
 //TODO:returned empty array
 const getSubmissions = async (callback) => {
   try {
-    const ret = await json(Submission.find({}));
+    const ret = await Submission.find({});
     callback(ret);
   } catch (e) {
     error();

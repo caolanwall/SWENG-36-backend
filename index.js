@@ -199,7 +199,21 @@ router.get('/user', cors(), (req, res) => {
 			},
 		);
 	} else {
-		console.log("Unknown User property!")
+		console.log("getUser");
+		userHandler.getUser(
+			data => {
+				if(isEmptyObject(data)){
+					return res.json("No result");
+				}
+				else
+					return res.json({ data, success: true });
+			},
+			() => {
+				return res.json({
+					success: false,
+				});
+			},
+		);
 	}
 });
 
@@ -370,7 +384,21 @@ router.get('/assignment', cors(), (req, res) => {
 			},
 		);
 	} else {
-		console.log("No ID or Module provided!")
+		console.log("getAssignment");
+		assignmentHandler.getAssignment(
+			data => {
+				if(isEmptyObject(data)){
+					return res.json("No result");
+				}
+				else
+					return res.json({ data, success: true });
+			},
+			() => {
+				return res.json({
+					success: false,
+				});
+			},
+		);
 	}
 });
 
@@ -650,7 +678,21 @@ router.get('/submission', cors(), (req, res) => {
 			},
 		);
 	} else {
-		console.log("Unknown Submission property!")
+		console.log("getSubmissions");
+		submissionHandler.getSubmissions(
+			data => {
+				if(isEmptyObject(data)){
+					return res.json("No result");
+				}
+				else
+					return res.json({ data, success: true });
+			},
+			() => {
+				return res.json({
+					success: false,
+				});
+			},
+		);
 	}
 });
 
