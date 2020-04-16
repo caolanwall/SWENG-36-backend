@@ -678,7 +678,7 @@ router.patch('/submissionReview', cors(), (req, res) => {
 });
 
 // works
-// Get submission by _id or user_Id and assignment_Id
+// Get submission by _id or assignment_Id or user_Id and assignment_Id
 router.get('/submission', cors(), (req, res) => {
 	if(req.query.id != null){
 		console.log("getSubmissionByID");
@@ -725,6 +725,25 @@ router.get('/submission', cors(), (req, res) => {
 
 		submissionHandler.getSubmissionByUserAssignmentId(
 			user_Id,
+			assignment_Id,
+			data => {
+				if(isEmptyObject(data)){
+					return res.json("No result");
+				}
+				else
+					return res.json({ data, success: true });
+			},
+			() => {
+				return res.json({
+					success: false,
+				});
+			},
+		);
+	} else if(req.query.assignment_Id != null){
+		console.log("getSubmissionByAssignmentId");
+		const assignment_Id = req.query.assignment_Id;
+
+		submissionHandler.getSubmissionByAssignmentId(
 			assignment_Id,
 			data => {
 				if(isEmptyObject(data)){

@@ -78,6 +78,16 @@ const getSubmissionByUserAssignmentId = async (User_Id, Assignment_Id, callback)
   }
 };
 
+const getSubmissionByAssignmentId =
+	async (Assignment_Id, callback) => {
+  try {
+    const ret = await Submission.find({ "assignment_Id":Assignment_Id});
+    callback(ret);
+  } catch (e) {
+    error();
+  }
+};
+
 const updatePDFLinkToSubmission = async (Submission_Id, Pdf_Ids, callback) =>{
   try {
     const ret = await Submission.update(
@@ -138,6 +148,7 @@ module.exports = {
   getSubmissionById: getSubmissionById,
   getSubmissionBySubmissionId: getSubmissionBySubmissionId,
   getSubmissionByUserAssignmentId: getSubmissionByUserAssignmentId,
+  getSubmissionByAssignmentId: getSubmissionByAssignmentId,
   deleteSubmission:deleteSubmission,
   updatePDFLinkToSubmission: updatePDFLinkToSubmission,
   updateReviewToSubmission : updateReviewToSubmission
