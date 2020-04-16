@@ -129,7 +129,7 @@ const getUserByModule = async (module, callback) => {
 //TODO:returned empty array
 const getUser = async (callback) => {
   try {
-    const ret = await json(User.find({}));
+    const ret = await User.find({});
     callback(ret);
   } catch (e) {
     error();
